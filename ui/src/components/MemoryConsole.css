@@ -1,0 +1,97 @@
+.memory-console {
+  background: #181825;
+  color: #e0e0e0;
+  padding: 2rem;
+  border-radius: 1rem;
+  max-width: 700px;
+  margin: 2rem auto;
+  box-shadow: 0 2px 16px #0002;
+}
+.memory-console h2 {
+  margin-bottom: 1.5rem;
+  color: #a3e635;
+}
+.memory-search-form {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+.memory-search-form input {
+  flex: 1;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid #333;
+  background: #232336;
+  color: #e0e0e0;
+  font-size: 1rem;
+}
+.memory-search-form button {
+  padding: 0.5rem 1.2rem;
+  border-radius: 0.5rem;
+  background: #4f46e5;
+  color: #fff;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+}
+.memory-search-form button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.memory-results {
+  margin-top: 1.5rem;
+}
+.memory-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.memory-entry {
+  background: #232336;
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  box-shadow: 0 1px 4px #0001;
+}
+.memory-text {
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+}
+.memory-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  font-size: 0.95rem;
+  color: #a1a1aa;
+}
+.memory-tag {
+  background: #a3e635;
+  color: #232336;
+  border-radius: 0.3rem;
+  padding: 0.1rem 0.5rem;
+  margin-left: 0.3rem;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.2s;
+}
+.memory-tag:hover {
+  background: #facc15;
+}
+.memory-emotion {
+  color: #f472b6;
+}
+.memory-context {
+  color: #38bdf8;
+}
+.memory-date {
+  color: #a1a1aa;
+}
+.loading {
+  color: #facc15;
+  font-weight: bold;
+}
+.error {
+  color: #ef4444;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}

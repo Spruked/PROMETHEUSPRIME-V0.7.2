@@ -1,0 +1,51 @@
+.helix-echo-dashboard {
+  background: #181825;
+  color: #e0e0e0;
+  padding: 2rem;
+  border-radius: 1rem;
+  max-width: 700px;
+  margin: 2rem auto;
+  box-shadow: 0 2px 16px #0002;
+}
+.helix-echo-dashboard h2 {
+  margin-bottom: 1.5rem;
+  color: #f472b6;
+}
+.helix-echo-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.helix-echo-controls textarea {
+  width: 100%;
+  font-size: 1.1rem;
+  border-radius: 0.5rem;
+  border: 1px solid #333;
+  padding: 0.75rem;
+  background: #232336;
+  color: #e0e0e0;
+}
+.helix-echo-controls button {
+  align-self: flex-end;
+  padding: 0.5rem 1.5rem;
+  border-radius: 0.5rem;
+  background: #f472b6;
+  color: #fff;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+}
+.helix-echo-response {
+  background: #232336;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+  color: #a3e635;
+}
+.helix-echo-status {
+  background: #232336;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  color: #38bdf8;
+}

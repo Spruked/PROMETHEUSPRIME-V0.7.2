@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CALI Frontend-Backend Connection Test</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            background: #0a0a0a;
+            color: #00ff00;
+            padding: 20px;
+            margin: 0;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(0, 255, 0, 0.05);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #00ff00;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #00ff00;
+            text-shadow: 0 0 10px #00ff00;
+        }
+        
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #00ff00;
+            border-radius: 5px;
+        }
+        
+        .test-result {
+            margin: 10px 0;
+            padding: 10px;
+            font-family: monospace;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 3px;
+        }
+        
+        .success {
+            color: #00ff00;
+            border-left: 4px solid #00ff00;
+        }
+        
+        .error {
+            color: #ff0000;
+            border-left: 4px solid #ff0000;
+        }
+        
+        button {
+            background: #00ff00;
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+        }
+        
+        button:hover {
+            background: #00cc00;
+        }
+        
+        input[type="text"] {
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid #00ff00;
+            color: #00ff00;
+            padding: 10px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            width: 300px;
+        }
+        
+        #websocket-status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+        
+        .connected {
+            background: #00ff00;
+            color: #000;
+        }
+        
+        .disconnected {
+            background: #ff0000;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔥 CALI Frontend-Backend Connection Test</h1>
+        
+        <div class="test-section">
+            <h3>WebSocket Status: <span id="websocket-status" class="disconnected">DISCONNECTED</span></h3>
+            <div id="websocket-events"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>API Endpoint Tests</h3>
+            <button onclick="testHeartbeat()">Test Heartbeat</button>
+            <button onclick="testPrompt()">Test Prompt</button>
+            <button onclick="testCodex()">Test Codex</button>
+            <button onclick="testReconcile()">Test Reconcile</button>
+            <div id="api-results"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>Interactive Tests</h3>
+            <input type="text" id="prompt-input" placeholder="Enter a prompt...">
+            <button onclick="sendPrompt()">Send Prompt</button>
+            <br><br>
+            <input type="text" id="glyph-input" placeholder="Enter glyph content...">
+            <button onclick="createGlyph()">Create Glyph</button>
+            <div id="interactive-results"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+    <script>
+        const API_BASE = 'http://localhost:5000';
+        let socket;
+        
+        // Initialize WebSocket connection
+        function initWebSocket() {
+            socket = io(API_BASE);
+            
+            socket.on('connect', () => {
+                const statusEl = document.getElementById('websocket-status');
+                statusEl.textContent = 'CONNECTED';
+                statusEl.className = 'connected';
+                addEvent('WebSocket connected');
+            });
+            
+            socket.on('disconnect', () => {
+                const statusEl = document.getElementById('websocket-status');
+                statusEl.textContent = 'DISCONNECTED';
+                statusEl.className = 'disconnected';
+                addEvent('WebSocket disconnected');
+            });
+            
+            socket.on('glyph', (data) => {
+                addEvent(`Glyph received: ${JSON.stringify(data)}`);
+            });
+        }
+        
+        function addEvent(message) {
+            const eventsEl = document.getElementById('websocket-events');
+            const eventEl = document.createElement('div');
+            eventEl.className = 'test-result success';
+            eventEl.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            eventsEl.appendChild(eventEl);
+            eventsEl.scrollTop = eventsEl.scrollHeight;
+        }
+        
+        function addResult(message, isSuccess = true) {
+            const resultsEl = document.getElementById('api-results');
+            const resultEl = document.createElement('div');
+            resultEl.className = `test-result ${isSuccess ? 'success' : 'error'}`;
+            resultEl.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            resultsEl.appendChild(resultEl);
+            resultsEl.scrollTop = resultsEl.scrollHeight;
+        }
+        
+        function addInteractiveResult(message, isSuccess = true) {
+            const resultsEl = document.getElementById('interactive-results');
+            const resultEl = document.createElement('div');
+            resultEl.className = `test-result ${isSuccess ? 'success' : 'error'}`;
+            resultEl.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            resultsEl.appendChild(resultEl);
+            resultsEl.scrollTop = resultsEl.scrollHeight;
+        }
+        
+        async function testHeartbeat() {
+            try {
+                const response = await fetch(`${API_BASE}/heartbeat`);
+                const data = await response.json();
+                addResult(`Heartbeat: ${JSON.stringify(data)}`);
+            } catch (error) {
+                addResult(`Heartbeat failed: ${error.message}`, false);
+            }
+        }
+        
+        async function testPrompt() {
+            try {
+                const response = await fetch(`${API_BASE}/prompt`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt: 'Test prompt from frontend' })
+                });
+                const data = await response.json();
+                addResult(`Prompt: ${JSON.stringify(data)}`);
+            } catch (error) {
+                addResult(`Prompt failed: ${error.message}`, false);
+            }
+        }
+        
+        async function testCodex() {
+            try {
+                const response = await fetch(`${API_BASE}/api/codex/new`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ content: 'Test glyph from frontend', tags: ['frontend', 'test'] })
+                });
+                const data = await response.json();
+                addResult(`Codex: ${JSON.stringify(data)}`);
+            } catch (error) {
+                addResult(`Codex failed: ${error.message}`, false);
+            }
+        }
+        
+        async function testReconcile() {
+            try {
+                const response = await fetch(`${API_BASE}/reconcile`);
+                const data = await response.json();
+                addResult(`Reconcile: ${JSON.stringify(data)}`);
+            } catch (error) {
+                addResult(`Reconcile failed: ${error.message}`, false);
+            }
+        }
+        
+        async function sendPrompt() {
+            const input = document.getElementById('prompt-input');
+            const prompt = input.value.trim();
+            
+            if (!prompt) {
+                addInteractiveResult('Please enter a prompt', false);
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/prompt`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt })
+                });
+                const data = await response.json();
+                addInteractiveResult(`Prompt sent: ${JSON.stringify(data)}`);
+                input.value = '';
+            } catch (error) {
+                addInteractiveResult(`Failed to send prompt: ${error.message}`, false);
+            }
+        }
+        
+        async function createGlyph() {
+            const input = document.getElementById('glyph-input');
+            const content = input.value.trim();
+            
+            if (!content) {
+                addInteractiveResult('Please enter glyph content', false);
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/codex/new`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ content, tags: ['interactive', 'user'] })
+                });
+                const data = await response.json();
+                addInteractiveResult(`Glyph created: ${JSON.stringify(data)}`);
+                input.value = '';
+            } catch (error) {
+                addInteractiveResult(`Failed to create glyph: ${error.message}`, false);
+            }
+        }
+        
+        // Initialize on page load
+        window.onload = () => {
+            initWebSocket();
+        };
+    </script>
+</body>
+</html>

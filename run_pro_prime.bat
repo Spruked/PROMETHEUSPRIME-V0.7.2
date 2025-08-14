@@ -1,0 +1,3 @@
+@echo off 
+echo Pro Prime Minting Alpha - Starting System... 
+python start_dashboard.py 

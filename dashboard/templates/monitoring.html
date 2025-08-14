@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitoring - Prometheus NFT Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+</head>
+<body class="bg-gray-900 text-white">
+    <!-- Navigation -->
+    <nav class="bg-gray-800 border-b border-gray-700">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <h1 class="text-xl font-bold">🔥 Prometheus NFT Dashboard</h1>
+                    </div>
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="/" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Dashboard</a>
+                        <a href="/monitoring" class="bg-gray-900 text-white px-3 py-2 rounded-md text-sm font-medium">Monitoring</a>
+                        <a href="/security" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Security</a>
+                        <a href="/transactions" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Transactions</a>
+                        <a href="/logs" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Logs</a>
+                        <a href="/config" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Config</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <h2 class="text-2xl font-bold mb-6">System Monitoring</h2>
+        
+        <!-- Metrics Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <!-- CPU Usage -->
+            <div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold">CPU Usage</h3>
+                    <i class="fas fa-microchip text-blue-400"></i>
+                </div>
+                <div class="text-3xl font-bold mb-2" id="cpu-usage">0%</div>
+                <div class="w-full bg-gray-700 rounded-full h-2">
+                    <div class="bg-blue-500 h-2 rounded-full" style="width: 0%" id="cpu-bar"></div>
+                </div>
+            </div>
+
+            <!-- Memory Usage -->
+            <div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold">Memory Usage</h3>
+                    <i class="fas fa-memory text-green-400"></i>
+                </div>
+                <div class="text-3xl font-bold mb-2" id="memory-usage">0%</div>
+                <div class="w-full bg-gray-700 rounded-full h-2">
+                    <div class="bg-green-500 h-2 rounded-full" style="width: 0%" id="memory-bar"></div>
+                </div>
+            </div>
+
+            <!-- Disk Usage -->
+            <div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold">Disk Usage</h3>
+                    <i class="fas fa-hdd text-yellow-400"></i>
+                </div>
+                <div class="text-3xl font-bold mb-2" id="disk-usage">0%</div>
+                <div class="w-full bg-gray-700 rounded-full h-2">
+                    <div class="bg-yellow-500 h-2 rounded-full" style="width: 0%" id="disk-bar"></div>
+                </div>
+            </div>
+
+            <!-- Network I/O -->
+            <div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold">Network I/O</h3>
+                    <i class="fas fa-network-wired text-purple-400"></i>
+                </div>
+                <div class="text-sm">
+                    <div class="flex justify-between">
+                        <span>Sent:</span>
+                        <span id="network-sent">0 MB</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Received:</span>
+                        <span id="network-recv">0 MB</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Performance Charts -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <!-- System Performance Chart -->
+            <div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
+                <h3 class="text-lg font-semibold mb-4">System Performance</h3>
+                <div class="h-64">
+                    <canvas id="systemPerformanceChart"></canvas>
+                </div>
+            </div>
+
+            <!-- API Metrics Chart -->
+            <div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
+                <h3 class="text-lg font-semibold mb-4">API Metrics</h3>
+                <div class="h-64">
+                    <canvas id="apiMetricsChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detailed Metrics -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Process Information -->
+            <div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
+                <h3 class="text-lg font-semibold mb-4">Process Information</h3>
+                <div class="space-y-3">
+                    <div class="flex justify-between">
+                        <span>Process CPU:</span>
+                        <span id="process-cpu">0%</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Process Memory:</span>
+                        <span id="process-memory">0%</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Threads:</span>
+                        <span id="process-threads">0</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>RSS Memory:</span>
+                        <span id="process-rss">0 MB</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- API Statistics -->
+            <div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
+                <h3 class="text-lg font-semibold mb-4">API Statistics</h3>
+                <div class="space-y-3">
+                    <div class="flex justify-between">
+                        <span>Total Requests:</span>
+                        <span id="api-requests">0</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Success Rate:</span>
+                        <span id="api-success-rate">0%</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Avg Response Time:</span>
+                        <span id="api-avg-response">0ms</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Error Rate:</span>
+                        <span id="api-error-rate">0%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Blockchain Metrics -->
+            <div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
+                <h3 class="text-lg font-semibold mb-4">Blockchain Metrics</h3>
+                <div class="space-y-3">
+                    <div class="flex justify-between">
+                        <span>Transactions:</span>
+                        <span id="blockchain-transactions">0</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Success Rate:</span>
+                        <span id="blockchain-success-rate">0%</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Avg Gas Used:</span>
+                        <span id="blockchain-avg-gas">0</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>IPFS Uploads:</span>
+                        <span id="ipfs-uploads">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        const socket = io();
+        
+        let systemChart;
+        let apiChart;
+        
+        // Initialize charts
+        function initializeCharts() {
+            const systemCtx = document.getElementById('systemPerformanceChart').getContext('2d');
+            systemChart = new Chart(systemCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'CPU %',
+                        data: [],
+                        borderColor: 'rgb(59, 130, 246)',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        tension: 0.1
+                    }, {
+                        label: 'Memory %',
+                        data: [],
+                        borderColor: 'rgb(16, 185, 129)',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: { color: '#ffffff' }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: { color: '#9ca3af' },
+                            grid: { color: '#374151' }
+                        },
+                        x: {
+                            ticks: { color: '#9ca3af' },
+                            grid: { color: '#374151' }
+                        }
+                    }
+                }
+            });
+            
+            const apiCtx = document.getElementById('apiMetricsChart').getContext('2d');
+            apiChart = new Chart(apiCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Success', 'Errors', 'Pending'],
+                    datasets: [{
+                        label: 'API Requests',
+                        data: [0, 0, 0],
+                        backgroundColor: [
+                            'rgba(16, 185, 129, 0.8)',
+                            'rgba(239, 68, 68, 0.8)',
+                            'rgba(245, 158, 11, 0.8)'
+                        ],
+                        borderColor: [
+                            'rgb(16, 185, 129)',
+                            'rgb(239, 68, 68)',
+                            'rgb(245, 158, 11)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: { color: '#ffffff' }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { color: '#9ca3af' },
+                            grid: { color: '#374151' }
+                        },
+                        x: {
+                            ticks: { color: '#9ca3af' },
+                            grid: { color: '#374151' }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Update monitoring data
+        function updateMonitoringData(data) {
+            const { metrics } = data;
+            if (!metrics) return;
+            
+            const gauges = metrics.gauges || {};
+            const counters = metrics.counters || {};
+            const histograms = metrics.histograms || {};
+            
+            // Update system metrics
+            const cpuUsage = gauges['system.cpu.percent'] || 0;
+            const memoryUsage = gauges['system.memory.percent'] || 0;
+            const diskUsage = gauges['system.disk.percent'] || 0;
+            
+            document.getElementById('cpu-usage').textContent = `${cpuUsage.toFixed(1)}%`;
+            document.getElementById('cpu-bar').style.width = `${cpuUsage}%`;
+            
+            document.getElementById('memory-usage').textContent = `${memoryUsage.toFixed(1)}%`;
+            document.getElementById('memory-bar').style.width = `${memoryUsage}%`;
+            
+            document.getElementById('disk-usage').textContent = `${diskUsage.toFixed(1)}%`;
+            document.getElementById('disk-bar').style.width = `${diskUsage}%`;
+            
+            // Update network metrics
+            const networkSent = gauges['system.network.bytes_sent'] || 0;
+            const networkRecv = gauges['system.network.bytes_recv'] || 0;
+            document.getElementById('network-sent').textContent = `${(networkSent / 1024 / 1024).toFixed(2)} MB`;
+            document.getElementById('network-recv').textContent = `${(networkRecv / 1024 / 1024).toFixed(2)} MB`;
+            
+            // Update process metrics
+            document.getElementById('process-cpu').textContent = `${(gauges['process.cpu.percent'] || 0).toFixed(1)}%`;
+            document.getElementById('process-memory').textContent = `${(gauges['process.memory.percent'] || 0).toFixed(1)}%`;
+            document.getElementById('process-threads').textContent = gauges['process.threads'] || 0;
+            document.getElementById('process-rss').textContent = `${((gauges['process.memory.rss_bytes'] || 0) / 1024 / 1024).toFixed(2)} MB`;
+            
+            // Update API metrics
+            const apiRequests = counters['api.requests'] || 0;
+            const apiSuccess = counters['api.success'] || 0;
+            const apiError = counters['api.error'] || 0;
+            
+            document.getElementById('api-requests').textContent = apiRequests;
+            document.getElementById('api-success-rate').textContent = apiRequests > 0 ? `${((apiSuccess / apiRequests) * 100).toFixed(1)}%` : '0%';
+            document.getElementById('api-error-rate').textContent = apiRequests > 0 ? `${((apiError / apiRequests) * 100).toFixed(1)}%` : '0%';
+            
+            const avgResponseTime = histograms['api.request_duration.duration'] ? histograms['api.request_duration.duration'].mean : 0;
+            document.getElementById('api-avg-response').textContent = `${(avgResponseTime * 1000).toFixed(0)}ms`;
+            
+            // Update blockchain metrics
+            const blockchainTx = counters['blockchain.transactions'] || 0;
+            const blockchainSuccess = counters['blockchain.transactions[success=true]'] || 0;
+            const ipfsUploads = counters['ipfs.operations'] || 0;
+            
+            document.getElementById('blockchain-transactions').textContent = blockchainTx;
+            document.getElementById('blockchain-success-rate').textContent = blockchainTx > 0 ? `${((blockchainSuccess / blockchainTx) * 100).toFixed(1)}%` : '0%';
+            document.getElementById('ipfs-uploads').textContent = ipfsUploads;
+            
+            const avgGasUsed = histograms['blockchain.gas_used'] ? histograms['blockchain.gas_used'].mean : 0;
+            document.getElementById('blockchain-avg-gas').textContent = Math.round(avgGasUsed);
+            
+            // Update charts
+            updateCharts(cpuUsage, memoryUsage, apiSuccess, apiError);
+        }
+        
+        // Update charts
+        function updateCharts(cpu, memory, apiSuccess, apiError) {
+            const now = new Date().toLocaleTimeString();
+            
+            // Update system chart
+            if (systemChart) {
+                systemChart.data.labels.push(now);
+                systemChart.data.datasets[0].data.push(cpu);
+                systemChart.data.datasets[1].data.push(memory);
+                
+                // Keep only last 20 points
+                if (systemChart.data.labels.length > 20) {
+                    systemChart.data.labels.shift();
+                    systemChart.data.datasets[0].data.shift();
+                    systemChart.data.datasets[1].data.shift();
+                }
+                
+                systemChart.update('none');
+            }
+            
+            // Update API chart
+            if (apiChart) {
+                apiChart.data.datasets[0].data = [apiSuccess, apiError, 0];
+                apiChart.update('none');
+            }
+        }
+        
+        // Socket event handlers
+        socket.on('realtime_update', updateMonitoringData);
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCharts();
+            socket.emit('request_update');
+            
+            setInterval(() => {
+                socket.emit('request_update');
+            }, 5000);
+        });
+    </script>
+</body>
+</html>

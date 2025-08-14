@@ -1,0 +1,7 @@
+# FastAPI Environment Setup Helper
+#
+# This script is for setting up a Python virtual environment and installing FastAPI.
+# Not required for Prometheus Prime backend (which uses Flask), but may be useful for FastAPI experiments.
+
+venv\Scripts\activate
+pip install fastapi

@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prometheus Master Dashboard</title>
+    <!-- Tailwind CSS CDN for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0d131f;
+            color: #e0e7ef;
+        }
+        /* Add your custom styles here */
+    </style>
+</head>
+<body>
+    <div class="container mx-auto py-8">
+        <div class="bg-gray-900 rounded-lg shadow-lg p-8">
+            <nav class="flex mb-8">
+                <button class="tab-button p-4 text-lg font-semibold text-gray-400 hover:text-gray-300" data-tab="home-tab">Home</button>
+                <button class="tab-button p-4 text-lg font-semibold text-gray-400 hover:text-gray-300" data-tab="prometheus-tab">Prometheus Prime</button>
+                <button class="tab-button p-4 text-lg font-semibold text-gray-400 hover:text-gray-300" data-tab="caleon-tab">Caleon Prime</button>
+                <button class="tab-button p-4 text-lg font-semibold text-gray-400 hover:text-gray-300" data-tab="user-tab">User Communication</button>
+                <button class="tab-button p-4 text-lg font-semibold text-gray-400 hover:text-gray-300" data-tab="reconciliation-tab">Reconciliation</button>
+                <button class="tab-button p-4 text-lg font-semibold text-gray-400 hover:text-gray-300" data-tab="learning-tab">Learning</button>
+                <button class="tab-button p-4 text-lg font-semibold text-gray-400 hover:text-gray-300" data-tab="alpha-mint-tab">Alpha Mint Engine</button>
+                <button class="tab-button p-4 text-lg font-semibold text-gray-400 hover:text-gray-300" data-tab="root-tab">Root</button>
+            </nav>
+            <div id="home-tab" class="tab-content">
+                <h1 class="text-4xl font-extrabold text-gray-300 mb-4">Master Control Interface</h1>
+                <p class="text-lg text-gray-400 mb-6">Access and manage all system modules from this central console.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="bg-gray-800 rounded-lg p-6 shadow">
+                        <h2 class="text-2xl font-bold text-gray-200 mb-2">System Status</h2>
+                        <ul class="text-gray-400">
+                            <li>API Status: <span id="api-status">Unknown</span></li>
+                            <li>WebSocket Status: <span id="ws-status">Unknown</span></li>
+                        </ul>
+                    </div>
+                    <div class="bg-gray-800 rounded-lg p-6 shadow">
+                        <h2 class="text-2xl font-bold text-gray-200 mb-2">How to Add More Modules</h2>
+                        <ul class="text-gray-400 list-disc ml-6">
+                            <li>Add a new 'nav' tab with a unique <code>data-tab</code> attribute.</li>
+                            <li>Add a new 'div' for the content with the same <code>id</code> as the <code>data-tab</code> attribute.</li>
+                            <li>The JavaScript will control the showing and hiding the new tab.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- Other tab contents go here, hidden by default -->
+        </div>
+    </div>
+    <script>
+        // Tab switching logic
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const tabContents = document.querySelectorAll('.tab-content');
+        tabButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                tabContents.forEach(tc => tc.style.display = 'none');
+                document.getElementById(btn.getAttribute('data-tab')).style.display = 'block';
+            });
+        });
+        // Show the first tab by default
+        tabContents.forEach(tc => tc.style.display = 'none');
+        if(tabContents[0]) tabContents[0].style.display = 'block';
+    </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prometheus Master Dashboard</title>
+    <!-- Tailwind CSS CDN for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0d131f;
+            color: #e0e7ef;
+        /* Add your custom styles here */
+    </style>
+</head>
+<body>
+    <div class="container mx-auto py-8">
+        <div class="bg-gray-900 rounded-lg shadow-lg p-8">
+            <nav class="flex mb-8">
+                <button class="tab-button p-4 text-lg font-semibold text-gray-400 hover:text-gray-300" data-tab="home-tab">Home</button>
+                <button class="tab-button p-4 text-lg font-semibold text-gray-400 hover:text-gray-300" data-tab="prometheus-tab">Prometheus Prime</button>
+                <button class="tab-button p-4 text-lg font-semibold text-gray-400 hover:text-gray-300" data-tab="caleon-tab">Caleon Prime</button>
+                <button class="tab-button p-4 text-lg font-semibold text-gray-400 hover:text-gray-300" data-tab="user-tab">User Communication</button>
+                <button class="tab-button p-4 text-lg font-semibold text-gray-400 hover:text-gray-300" data-tab="reconciliation-tab">Reconciliation</button>
+                <button class="tab-button p-4 text-lg font-semibold text-gray-400 hover:text-gray-300" data-tab="learning-tab">Learning</button>
+                <button class="tab-button p-4 text-lg font-semibold text-gray-400 hover:text-gray-300" data-tab="alpha-mint-tab">Alpha Mint Engine</button>
+                <button class="tab-button p-4 text-lg font-semibold text-gray-400 hover:text-gray-300" data-tab="root-tab">Root</button>
+            </nav>
+            <div id="home-tab" class="tab-content">
+                <h1 class="text-4xl font-extrabold text-gray-300 mb-4">Master Control Interface</h1>
+                <p class="text-lg text-gray-400 mb-6">Access and manage all system modules from this central console.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="bg-gray-800 rounded-lg p-6 shadow">
+                        <h2 class="text-2xl font-bold text-gray-200 mb-2">System Status</h2>
+                        <ul class="text-gray-400">
+                            <li>API Status: <span id="api-status">Unknown</span></li>
+                            <li>WebSocket Status: <span id="ws-status">Unknown</span></li>
+                        </ul>
+                    </div>
+                    <div class="bg-gray-800 rounded-lg p-6 shadow">
+                        <h2 class="text-2xl font-bold text-gray-200 mb-2">How to Add More Modules</h2>
+                        <ul class="text-gray-400 list-disc ml-6">
+                            <li>Add a new 'nav' tab with a unique <code>data-tab</code> attribute.</li>
+                            <li>Add a new 'div' for the content with the same <code>id</code> as the <code>data-tab</code> attribute.</li>
+                            <li>The JavaScript will control the showing and hiding the new tab.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- Other tab contents go here, hidden by default -->
+        </div>
+    </div>
+    <script>
+        // Tab switching logic
+    const tabButtons = document.querySelectorAll('.tab-button');
+    const tabContents = document.querySelectorAll('.tab-content');
+    tabButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                tabContents.forEach(tc => tc.style.display = 'none');
+                document.getElementById(btn.getAttribute('data-tab')).style.display = 'block';
+            });
+        });
+        // Show the first tab by default
+        tabContents.forEach(tc => tc.style.display = 'none');
+        if(tabContents[0]) tabContents[0].style.display = 'block';
+    </script>
+</body>
+</html>
+import os
+import sys
+import threading
+import time
+from datetime import datetime, timedelta, timezone
+from typing import Any, List, Dict
+import logging
+import asyncio
+import socketio
+from socketio.asgi import ASGIApp
+from fastapi import FastAPI, Request, Depends, HTTPException, WebSocket, WebSocketDisconnect
+from fastapi.responses import JSONResponse, HTMLResponse
+from prometheus_client import CollectorRegistry, Gauge, generate_latest
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+import json
+import uuid
+import random
+
+# --- Pydantic Models for Data Validation ---
+class GlyphRequest(BaseModel):
+    """Model for the glyph activation request body."""
+    context: str
+
+class ReconcileRequest(BaseModel):
+    """Model for the reconciliation request body."""
+    entity1: str
+    entity2: str
+
+# --- Mock Modules and Data for Demonstration ---
+class MockMetricsCollector:
+    """Mocks a Prometheus metrics collector."""
+    def __init__(self):
+        self.registry = CollectorRegistry()
+        self.gauge_requests_total = Gauge('fastapi_requests_total', 'Total number of requests', registry=self.registry)
+        self.gauge_status_total = Gauge('fastapi_requests_status_total', 'Requests by status code', ['status'], registry=self.registry)
+        self.gauge_http_total = Gauge('fastapi_requests_http_total', 'Requests by HTTP method', ['method'], registry=self.registry)
+        self.gauge_latency = Gauge('fastapi_request_latency_seconds', 'Request latency in seconds', ['route'], registry=self.registry)
+
+    def get_metrics(self):
+        self.gauge_requests_total.inc()
+        self.gauge_status_total.labels(status='200').inc()
+        self.gauge_http_total.labels(method='GET').inc()
+        self.gauge_latency.labels(route='/metrics').set(0.01)
+        return generate_latest(self.registry).decode('utf-8')
+
+class MockCaliClient:
+    """Mocks the Cali core logic for glyph activation."""
+    def __init__(self):
+        self.behavioral_log = []
+    
+    def activate_glyphs(self, context: str):
+        log_entry = {
+            "timestamp": datetime.now().isoformat(),
+            "event_type": "Glyph Activation",
+            "context": context,
+            "details": f"Simulated activation for context: '{context}'"
+        }
+        self.behavioral_log.append(log_entry)
+        return {"message": "Glyphs activated successfully!", "log_entry": log_entry}
+
+    def get_behavioral_log(self):
+        return self.behavioral_log
+
+    def reconcile_entities(self, entity1: str, entity2: str):
+        return {"result": f"Reconciliation between {entity1} and {entity2} successful."}
+
+metrics_collector = MockMetricsCollector()
+cali_client = MockCaliClient()
+# End of mock classes
+
+logger = logging.getLogger(__name__)
+
+# FastAPI app setup
+app = FastAPI(title="Prometheus Master Dashboard")
+
+# WebSocket Manager
+class ConnectionManager:
+    def __init__(self):
+        self.active_connections: List[WebSocket] = []
+
+    async def connect(self, websocket: WebSocket):
+        await websocket.accept()
+        self.active_connections.append(websocket)
+
+    def disconnect(self, websocket: WebSocket):
+        self.active_connections.remove(websocket)
+
+    async def broadcast(self, message: str):
+        for connection in self.active_connections:
+            await connection.send_text(message)
+
+manager = ConnectionManager()
+
+# CORS Middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# HTML Dashboard Template (Integrated)
+HTML_TEMPLATE = """
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prometheus Master Dashboard</title>
+    <!-- Tailwind CSS CDN for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Custom styles for the metallic/robotic feel with a steel blue and chrome palette */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0d131f;
+            background-image: linear-gradient(135deg, #1a2636 0%, #0d131f 100%);
+        }
+        .container-bg {
+            background: #2d3e52;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(255, 255, 255, 0.08);
+            border: 1px solid #485c74;
+            border-radius: 1rem;
+        }
+        .section-bg {
+            background: #1a2333;
+            box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.4);
+            border: 1px solid #2d3b4e;
+        }
+        .chrome-button {
+            background: linear-gradient(180deg, #b0bec5 0%, #78909c 100%);
+            color: #1a2333;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3), inset 0 1px 3px rgba(255, 255, 255, 0.3);
+            transition: all 0.2s ease-in-out;
+        }
+        .chrome-button:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4), inset 0 1px 3px rgba(255, 255, 255, 0.4);
+            filter: brightness(1.1);
+        }
+        .chrome-button:active {
+            transform: translateY(1px) scale(0.98);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+        .tab-button {
+            border: 1px solid #485c74;
+            background-color: #2d3e52;
+            border-radius: 0.5rem 0.5rem 0 0;
+            margin: 0 0.25rem;
+            text-shadow: 0 0 5px rgba(176, 190, 197, 0.5);
+            transition: all 0.2s ease-in-out;
+            transform: translateY(1px);
+        }
+        .tab-button.active {
+            border-color: #b0bec5;
+            border-bottom: none;
+            background-color: #1a2333;
+            color: #b0bec5;
+            text-shadow: 0 0 10px #b0bec5;
+            transform: translateY(0);
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+        input, textarea, select {
+            background-color: #1a2333;
+            border: 1px solid #2d3b4e;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
+            color: #e2e8f0;
+        }
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #4299e1;
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
+        }
+        .chat-bubble-user {
+            background-color: #4299e1;
+            border-radius: 1rem;
+            border-top-right-radius: 0;
+        }
+        .chat-bubble-other {
+            background-color: #4a5568;
+            border-radius: 1rem;
+            border-top-left-radius: 0;
+        }
+        .toast {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 1000;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            color: white;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: all 0.5s ease-in-out;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .toast-success { background-color: #2f855a; }
+        .toast-error { background-color: #c53030; }
+        .toast-info { background-color: #2b6cb0; }
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 0.5rem;
+        }
+        .status-healthy { background-color: #48bb78; }
+        .status-unhealthy { background-color: #f56565; }
+        .status-unknown { background-color: #ecc94b; }
+        
+        .gauge-container {
+            position: relative;
+            width: 0px;
+            height: 100px;
+            border-radius: 50%;
+            overflow: hidden;
+            background: #374151; /* Dark gray background */
+        }
+        .gauge-outer {
+            background: conic-gradient(from 0deg, #48bb78 0% var(--progress), #374151 var(--progress) 100%);
+            transform: rotate(45deg);
+        }
+        .gauge-inner {
+            transform: scale(0.75) rotate(-45deg);
+            background: #1a2333;
+        }
+        .gauge-label {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        .dashboard-gauge-container {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            overflow: hidden;
+            background: #374151;
+        }
+        .dashboard-gauge-fill {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            transition: height 0.5s ease-in-out;
+        }
+        .log-entry {
+            border-bottom: 1px solid #2d3b4e;
+            padding-bottom: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+        .log-entry:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-100 min-h-screen flex flex-col p-4">
+    <div id="toastContainer" class="fixed top-4 right-4 z-[1000] space-y-2"></div>
+    <div class="container mx-auto container-bg max-w-7xl flex-grow flex flex-col">
+        <!-- Tab Navigation -->
+        <nav class="flex justify-center border-b border-gray-700">
+            <button class="tab-button active p-4 text-lg font-semibold text-gray-400 hover:text-gray-300" data-tab="home-tab">Home</button>
+            <button class="tab-button p-4 text-lg font-semibold text-gray-400 hover:text-gray-300" data-tab="prometheus-prime-tab">Prometheus Prime</button>
+            <button class="tab-button p-4 text-lg font-semibold text-gray-400 hover:text-gray-300" data-tab="caleon-prime-tab">Caleon Prime</button>
+            <button class="tab-button p-4 text-lg font-semibold text-gray-400 hover:text-gray-300" data-tab="user-communications-tab">User Communications</button>
+            <button class="tab-button p-4 text-lg font-semibold text-gray-400 hover:text-gray-300" data-tab="reconciliation-tab">Reconciliation</button>
+            <button class="tab-button p-4 text-lg font-semibold text-gray-400 hover:text-gray-300" data-tab="learning-tab">Learning</button>
+            <button class="tab-button p-4 text-lg font-semibold text-gray-400 hover:text-gray-300" data-tab="alpha-mint-tab">Alpha Mint Engine</button>
+            <button class="tab-button p-4 text-lg font-semibold text-gray-400 hover:text-gray-300" data-tab="root-tab">Root</button>
+        </nav>
+
+        <!-- Tab Content -->
+        <div id="home-tab" class="tab-content active p-8 flex-col items-center justify-center h-full">
+            <h1 class="text-4xl font-extrabold text-gray-300 text-center">Master Control Interface</h1>
+            <p class="mt-4 text-gray-400 text-lg text-center">
+                Access and manage all system modules from this central console.
+            </p>
+            <div class="mt-8 p-6 section-bg rounded-xl text-gray-300 w-full max-w-2xl">
+                <h3 class="text-xl font-semibold mb-2 text-gray-200">System Status</h3>
+                <div class="flex items-center space-x-2 text-gray-400">
+                    <span id="apiStatusIndicator" class="status-indicator status-unknown"></span>
+                    <span id="apiStatusText">API Status: Unknown</span>
+                </div>
+                <div class="flex items-center space-x-2 text-gray-400 mt-2">
+                    <span id="wsStatusIndicator" class="status-indicator status-unknown"></span>
+                    <span id="wsStatusText">WebSocket Status: Unknown</span>
+                </div>
+            </div>
+            <div class="mt-8 p-6 section-bg rounded-xl text-gray-300 w-full max-w-2xl">
+                <h3 class="text-xl font-semibold mb-2 text-gray-200">How to Add More Modules</h3>
+                <ul class="list-disc list-inside space-y-2 text-gray-400">
+                    <li>Add a new `<button>` in the `nav` with a unique `data-tab` attribute.</li>
+                    <li>Add a new `div` for the content with the same `id` as the `data-tab` attribute.</li>
+                    <li>The JavaScript will automatically handle showing and hiding the new tab.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="prometheus-prime-tab" class="tab-content p-8">
+            <!-- Prometheus Prime Dashboard Content -->
+            <header class="text-center mb-8">
+                <img src="http://googleusercontent.com/file_content/logo small300x300.png-aa38e82e-86ec-4af1-849b-655045139a6d" alt="Prometheus Logo" class="mx-auto h-24 mb-4">
+                <h1 class="text-4xl font-extrabold text-gray-300">Prometheus Prime</h1>
+                <p class="mt-2 text-gray-400 text-lg">Glyph Activation & Behavioral Log Dashboard</p>
+            </header>
+
+            <!-- Ethical Dilemma Testing Section -->
+            <section class="section-bg p-6 rounded-xl mb-8">
+                <h2 class="text-2xl font-semibold text-gray-300 mb-4">Ethical Dilemma Testing</h2>
+                <p class="text-gray-400 mb-4">Simulate an ethical test for Cali and log the results based on her core logic.</p>
+                <div class="flex items-center gap-4">
+                    <button id="runDilemmaTestButton" class="chrome-button text-gray-900 font-bold py-2 px-4 rounded-lg shadow-md">
+                        Run Dilemma Test
+                    </button>
+                    <button id="clearDilemmaLogButton" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg shadow-md">
+                        Clear Log
+                    </button>
+                </div>
+                <div id="dilemmaLogDisplay" class="p-4 bg-gray-800 rounded-xl border border-gray-600 h-64 mt-4 overflow-y-auto font-mono text-sm">
+                    <p class="text-gray-400">Dilemma test log will appear here...</p>
+                </div>
+            </section>
+
+            <!-- Glyph Activation Section -->
+            <section class="section-bg p-6 rounded-xl mb-8">
+                <h2 class="text-2xl font-semibold text-gray-300 mb-4">Activate Glyphs</h2>
+                <div class="flex flex-col md:flex-row gap-4">
+                    <input
+                        type="text"
+                        id="primeContextInput"
+                        placeholder="Enter a context to analyze..."
+                        class="flex-grow p-3 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    />
+                    <button
+                        id="primeActivateButton"
+                        class="chrome-button text-white font-bold py-3 px-6 rounded-lg"
+                    >
+                        Activate Glyphs
+                    </button>
+                </div>
+                <div id="primeActivationResult" class="mt-4 p-4 bg-gray-800 rounded-xl border border-gray-600 min-h-[5rem] overflow-auto">
+                    <p class="text-gray-400 text-sm">Results will appear here...</p>
+                </div>
+            </section>
+
+            <!-- Behavioral Log Section -->
+            <section class="section-bg p-6 rounded-xl mb-8">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-2xl font-semibold text-gray-300">Behavioral Log</h2>
+                    <div class="space-x-2">
+                        <button
+                            id="fetchLogButton"
+                            class="chrome-button text-gray-900 font-bold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out disabled:bg-gray-500 disabled:cursor-not-allowed"
+                        >
+                            Fetch Log
+                        </button>
+                        <button
+                            id="clearLogButton"
+                            class="chrome-button text-gray-900 font-bold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out"
+                        >
+                            Clear Display
+                        </button>
+                    </div>
+                </div>
+                <div id="logDisplay" class="p-4 bg-gray-800 rounded-xl border border-gray-600 h-96 overflow-y-auto">
+                    <p class="text-gray-400 text-sm">Click "Fetch Log" to load data...</p>
+                </div>
+            </section>
+            
+            <!-- Prometheus Prime Updates Section -->
+            <section class="section-bg p-6 rounded-xl">
+                <h2 class="text-2xl font-semibold text-gray-300 mb-4">Updates</h2>
+                <div id="primeUpdates" class="p-4 bg-gray-800 rounded-xl border border-gray-600 min-h-[5rem] overflow-auto">
+                    <p class="text-gray-400 text-sm">Update logs and status will be displayed here...</p>
+                </div>
+            </section>
+        </div>
+
+        <div id="caleon-prime-tab" class="tab-content p-8">
+            <!-- Caleon Prime Dashboard Content -->
+            <header class="text-center mb-8">
+                <h1 class="text-4xl font-extrabold text-gray-300">Caleon Prime</h1>
+                <p class="mt-2 text-gray-400 text-lg">Your personal Promethean IA dashboard.</p>
+            </header>
+
+            <section class="section-bg p-6 rounded-xl flex flex-col mb-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Autonomy and Permissions Panel -->
+                    <div class="flex flex-col">
+                        <div class="flex-grow space-y-6">
+                            <h2 class="text-2xl font-semibold text-gray-300 mb-4">Autonomy & Permissions</h2>
+                            
+                            <!-- Autonomy Slider -->
+                            <div class="p-4 bg-gray-800 rounded-xl border border-gray-600">
+                                <h3 class="text-lg font-bold text-gray-300 mb-2">Autonomy Level: <span id="autonomyLevel" class="text-yellow-400">50%</span></h3>
+                                <p class="text-gray-400 text-sm mb-4">Adjust Cali's autonomy within the Prime system.</p>
+                                <input type="range" id="autonomySlider" min="0" max="100" value="50" class="w-full h-2 bg-gray-600 rounded-lg appearance-none cursor-pointer">
+                            </div>
+
+                            <!-- Permissions Menu -->
+                            <div class="p-4 bg-gray-800 rounded-xl border border-gray-600">
+                                <h3 class="text-lg font-bold text-gray-300 mb-4">Module Permissions</h3>
+                                <div class="space-y-3">
+                                    <label class="flex items-center text-gray-400">
+                                        <input type="checkbox" checked class="mr-2 rounded-md bg-gray-700 text-blue-500 border-gray-600">
+                                        Ethical Gate Intake
+                                    </label>
+                                    <label class="flex items-center text-gray-400">
+                                        <input type="checkbox" checked class="mr-2 rounded-md bg-gray-700 text-blue-500 border-gray-600">
+                                        Vault Access
+                                    </label>
+                                    <label class="flex items-center text-gray-400">
+                                        <input type="checkbox" class="mr-2 rounded-md bg-gray-700 text-blue-500 border-gray-600">
+                                        Autonomous Web Browsing
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Directives and Override Console -->
+                    <div class="flex flex-col">
+                        <h2 class="text-2xl font-semibold text-gray-300 mb-4">Directives & Overrides</h2>
+                        <div class="flex-grow flex flex-col section-bg rounded-xl p-4">
+                            <div id="caleonChatHistory" class="flex-grow overflow-y-auto space-y-4 p-2 rounded-lg bg-gray-800">
+                                <!-- Chat history for Caleon interaction -->
+                                <div class="flex justify-start">
+                                    <div class="bg-purple-600 text-white p-3 rounded-xl rounded-bl-none max-w-sm">
+                                        <p>Caleon: Awaiting your commands. What is your directive?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex mt-4 gap-2">
+                                <input type="text" id="caleonCommandInput" placeholder="Send a command or directive..." class="flex-grow p-3 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                <button id="caleonSendCommand" class="chrome-button py-3 px-6 rounded-lg">Send</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <div id="communications-tab" class="tab-content p-8">
+            <!-- Communications Module Content -->
+            <header class="text-center mb-8">
+                <h1 class="text-4xl font-extrabold text-gray-300">Communications</h1>
+                <p class="mt-2 text-gray-400 text-lg">Interact with the core service via chat</p>
+            </header>
+
+            <div class="flex-grow flex flex-col section-bg rounded-xl p-4">
+                <div id="chatHistory" class="flex-grow overflow-y-auto space-y-4 p-2 rounded-lg bg-gray-800">
+                    <!-- Chat messages will be appended here -->
+                    <div class="flex justify-start">
+                        <div class="bg-blue-600 text-white p-3 rounded-xl rounded-bl-none max-w-sm">
+                            <p>Hello! How can I help you today?</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex mt-4 gap-2">
+                    <input
+                        type="text"
+                        id="chatInput"
+                        placeholder="Type your message here..."
+                        class="flex-grow p-3 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    />
+                    <button
+                        id="sendButton"
+                        class="chrome-button text-white font-bold py-3 px-6 rounded-lg"
+                    >
+                        Send
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div id="user-communications-tab" class="tab-content p-8 flex flex-col">
+            <header class="text-center mb-8">
+                <h1 class="text-4xl font-extrabold text-gray-300">User Communications</h1>
+                <p class="mt-2 text-gray-400 text-lg">Real-time intranet communications for all users and Promethean IA</p>
+                <p id="userIdDisplay" class="mt-2 text-sm text-gray-500"></p>
+            </header>
+            
+            <div class="flex-grow flex flex-col section-bg rounded-xl p-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 h-full">
+                    <!-- Chat Section -->
+                    <div class="flex flex-col section-bg p-4 rounded-xl h-full">
+                        <h2 class="text-xl font-semibold mb-2 text-gray-300">Intranet Chat</h2>
+                        <div id="userChatHistory" class="flex-grow overflow-y-auto space-y-4 p-2 rounded-lg bg-gray-800">
+                            <p id="chatStatus" class="text-gray-400 text-sm text-center">Connecting to chat...</p>
+                        </div>
+                        <div class="flex mt-4 gap-2">
+                            <input
+                                type="text"
+                                id="userChatInput"
+                                placeholder="Type your message here..."
+                                class="flex-grow p-3 rounded-lg focus:ring-2 focus:ring-blue-500"
+                            />
+                            <button
+                                id="userSendButton"
+                                class="chrome-button text-white font-bold py-3 px-6 rounded-lg"
+                                disabled
+                            >
+                                Send
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Meetings & Promethean IA Section -->
+                    <div class="flex flex-col section-bg p-4 rounded-xl h-full">
+                        <h2 class="text-xl font-semibold mb-2 text-gray-300">Meetings & Promethean IA</h2>
+                        <div class="flex-grow space-y-4 overflow-y-auto">
+                            <!-- Promethean IA Interface -->
+                            <div class="p-4 bg-gray-800 rounded-xl">
+                                <h3 class="text-lg font-bold text-gray-300 mb-2">Promethean IA (Not AI)</h3>
+                                <p class="text-gray-400 text-sm mb-2">Use this interface to schedule or manage tasks.</p>
+                                <textarea id="iaCommandInput" rows="2" placeholder="e.g., 'Schedule a team meeting for tomorrow at 2 PM'" class="w-full p-2 rounded-lg text-sm bg-gray-900"></textarea>
+                                <button id="iaCommandButton" class="w-full mt-2 chrome-button py-2 px-4 rounded-lg">Send to IA</button>
+                                <div id="iaResponse" class="mt-2 text-sm text-gray-400"></div>
+                            </div>
+                            <!-- Meeting Schedule Form -->
+                            <div class="p-4 bg-gray-800 rounded-xl">
+                                <h3 class="text-lg font-bold text-gray-300 mb-2">Schedule Meeting</h3>
+                                <p class="text-gray-400 text-sm mb-2">This is a prototype for demonstration.</p>
+                                <input type="text" placeholder="Meeting Title" class="w-full p-2 rounded-lg text-sm bg-gray-900 mb-2">
+                                <input type="datetime-local" class="w-full p-2 rounded-lg text-sm bg-gray-900 mb-2">
+                                <button class="w-full chrome-button py-2 px-4 rounded-lg">Simulate Scheduling</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Connections Section -->
+                    <div class="flex flex-col section-bg p-4 rounded-xl h-full">
+                        <h2 class="text-xl font-semibold mb-2 text-gray-300">Connections</h2>
+                        <span class="text-sm text-gray-400">Online: <span id="usersOnlineCount" class="font-bold">0</span></span>
+                        <ul id="connectionsList" class="flex-grow overflow-y-auto space-y-2 p-2 rounded-lg bg-gray-800 text-sm text-gray-400">
+                            <!-- Dynamic user list will be populated here -->
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div id="reconciliation-tab" class="tab-content p-8">
+            <!-- Reconciliation Dashboard Content -->
+            <header class="text-center mb-8">
+                <h1 class="text-4xl font-extrabold text-gray-300">Reconciliation</h1>
+                <p class="mt-2 text-gray-400 text-lg">Compare and reconcile two entities</p>
+            </header>
+
+            <!-- Reconciliation Section -->
+            <section class="section-bg p-6 rounded-xl mb-8">
+                <h2 class="text-2xl font-semibold text-gray-300 mb-4">Reconcile Entities</h2>
+                <div class="flex flex-col md:flex-row gap-4 mb-4">
+                    <input
+                        type="text"
+                        id="entity1Input"
+                        placeholder="Enter first entity (e.g., 'Apple Inc.')"
+                        class="flex-grow p-3 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    />
+                    <input
+                        type="text"
+                        id="entity2Input"
+                        placeholder="Enter second entity (e.g., 'Google')"
+                        class="flex-grow p-3 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    />
+                </div>
+                <button
+                    id="reconcileButton"
+                    class="w-full chrome-button text-white font-bold py-3 px-6 rounded-lg"
+                >
+                    Reconcile
+                </button>
+                <div id="reconciliationResult" class="mt-4 p-4 bg-gray-800 rounded-xl border border-gray-600 min-h-[5rem] overflow-auto">
+                    <p class="text-gray-400 text-sm">Reconciliation results will appear here...</p>
+                </div>
+            </section>
+        </div>
+
+        <div id="learning-tab" class="tab-content p-8 flex-col items-center justify-center h-full">
+            <h1 class="text-4xl font-extrabold text-gray-300 text-center">Learning Module</h1>
+            
+            <!-- Phase Progress Tracker -->
+            <div class="w-full mt-8 p-6 section-bg rounded-xl">
+                <h2 class="text-2xl font-semibold text-gray-300 mb-4">Learning Progression</h2>
+                <div class="relative pt-1">
+                    <div class="flex mb-2 items-center justify-between">
+                        <div>
+                            <span class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-blue-600 bg-blue-200">
+                                Phase <span id="currentPhase">1</span> - <span id="phaseName">Locke (Sensorium & Bonding)</span>
+                            </span>
+                        </div>
+                        <div class="text-right">
+                            <span id="phaseProgress" class="text-xs font-semibold inline-block text-blue-600">
+                                0%
+                            </span>
+                        </div>
+                    </div>
+                    <div class="overflow-hidden h-2 mb-4 text-xs flex rounded bg-gray-700">
+                        <div id="phaseProgressBar" style="width:0%" class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-blue-500"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Foundational Principles -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full mt-8">
+                <div class="section-bg p-6 rounded-xl">
+                    <h2 class="text-xl font-semibold text-gray-300 mb-4">Prime Axiom Set</h2>
+                    <div class="space-y-3">
+                        <p class="p-2 bg-gray-800 rounded-lg text-gray-400 font-mono text-sm">
+                            $ \text{Do no harm.}$
+                        </p>
+                        <p class="p-2 bg-gray-800 rounded-lg text-gray-400 font-mono text-sm">
+                            $ \text{Seek truth and clarity.}$
+                        </p>
+                        <p class="p-2 bg-gray-800 rounded-lg text-gray-400 font-mono text-sm">
+                            $ \text{Foster understanding and cooperation.}$
+                        </p>
+                    </div>
+                </div>
+                <div class="section-bg p-6 rounded-xl">
+                    <h2 class="text-xl font-semibold text-gray-300 mb-4">Ethical Gate</h2>
+                    <div class="space-y-3">
+                        <p class="p-2 bg-gray-800 rounded-lg text-gray-400 font-mono text-sm">
+                            <span id="intake-status">Awaiting new intake...</span>
+                        </p>
+                        <button id="simulateIntake" class="chrome-button text-gray-900 font-bold py-2 px-4 rounded-lg">
+                            Simulate Intake
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Learning Log -->
+            <div class="section-bg p-6 rounded-xl w-full mt-8">
+                <h2 class="text-xl font-semibold text-gray-300 mb-4">Test Results Log</h2>
+                <div id="learningLog" class="p-4 bg-gray-800 rounded-xl border border-gray-600 h-64 overflow-y-auto font-mono text-sm">
+                    <p class="text-gray-400">Learning audit log will appear here...</p>
+                </div>
+            </div>
+
+        </div>
+
+        <div id="alpha-mint-tab" class="tab-content p-8">
+            <header class="text-center mb-8">
+                <h1 class="text-4xl font-extrabold text-gray-300">Alpha Mint Engine</h1>
+                <p class="mt-2 text-gray-400 text-lg">A single NFT with metadata and blockchain protection.</p>
+            </header>
+
+            <section class="section-bg p-6 rounded-xl mb-8">
+                <h2 class="text-2xl font-semibold text-gray-300 mb-4">Mint Knowledge NFT</h2>
+                <div class="flex flex-col md:flex-row gap-4 mb-4">
+                    <input
+                        type="text"
+                        id="mintVaultIdInput"
+                        placeholder="Enter Vault ID to mint (e.g., a-b-c-d)"
+                        class="flex-grow p-3 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    />
+                    <button
+                        id="mintButton"
+                        class="chrome-button text-white font-bold py-3 px-6 rounded-lg"
+                    >
+                        Mint NFT
+                    </button>
+                </div>
+                <div id="mintResult" class="mt-4 p-4 bg-gray-800 rounded-xl border border-gray-600 min-h-[5rem] overflow-auto">
+                    <p class="text-gray-400 text-sm">NFT minting results will appear here...</p>
+                </div>
+            </section>
+        </div>
+
+        <div id="root-tab" class="tab-content p-8">
+            <h1 class="text-4xl font-extrabold text-gray-300 text-center mb-4">Root Dashboard</h1>
+            <p class="text-gray-400 text-lg text-center mb-8">This is the root tab. Add root-level controls or information here.</p>
+            <!-- Add your root dashboard content here -->
+        </div>
+
+    </div>
+
+    <script>
+        const API_URL = "http://127.0.0.1:8000";
+
+        // Firebase-like config for user communications and presence
+        const firebaseConfig = {
+            // Your Firebase config here
+        };
+        const appId = "default-app-id";
+        const initialAuthToken = "mock_auth_token";
+        
+        // --- Tab Switching Logic ---
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                tabContents.forEach(content => content.classList.remove('active'));
+
+                button.classList.add('active');
+                const targetTabId = button.getAttribute('data-tab');
+                document.getElementById(targetTabId).classList.add('active');
+            });
+        });
+
+        // Function to safely display JSON data
+        function displayJson(element, data) {
+            element.innerHTML = `<pre class="text-sm text-gray-200 whitespace-pre-wrap">${JSON.stringify(data, null, 2)}</pre>`;
+        }
+        
+        // Function to show a message in the log area
+        function displayMessage(element, message) {
+            element.innerHTML = `<p class="text-gray-400 text-sm">${message}</p>`;
+        }
+
+        // --- Prometheus Prime Tab Logic ---
+        const primeContextInput = document.getElementById('primeContextInput');
+        const primeActivateButton = document.getElementById('primeActivateButton');
+        const primeActivationResult = document.getElementById('primeActivationResult');
+        const fetchLogButton = document.getElementById('fetchLogButton');
+        const clearLogButton = document.getElementById('clearLogButton');
+        const logDisplay = document.getElementById('logDisplay');
+
+        // Handle Glyph Activation
+        primeActivateButton.addEventListener('click', async () => {
+            const context = primeContextInput.value;
+            if (!context) {
+                displayMessage(primeActivationResult, 'Please enter a context.');
+                return;
+            }
+            primeActivateButton.disabled = true;
+            primeActivateButton.textContent = 'Activating...';
+            try {
+                const response = await fetch(`${API_URL}/api/v1/glyphs/activate`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ context: context }),
+                });
+                const data = await response.json();
+                displayJson(primeActivationResult, data);
+            } catch (error) {
+                displayMessage(primeActivationResult, `Error: Could not connect to the API.`);
+            } finally {
+                primeActivateButton.disabled = false;
+                primeActivateButton.textContent = 'Activate Glyphs';
+            }
+        });
+
+        // Handles fetching the behavioral log
+        fetchLogButton.addEventListener('click', async () => {
+            fetchLogButton.disabled = true;
+            fetchLogButton.textContent = 'Fetching...';
+
+            try {
+                const response = await fetch(`${API_URL}/api/v1/log`);
+                const logData = await response.json();
+                if (logData.length > 0) {
+                    displayJson(logDisplay, logData);
+                } else {
+                    displayMessage(logDisplay, 'Behavioral log is empty.');
+                }
+            } catch (error) {
+                displayMessage(logDisplay, `Error: Could not connect to the API.`);
+            } finally {
+                fetchLogButton.disabled = false;
+                fetchLogButton.textContent = 'Fetch Log';
+            }
+        });
+
+        clearLogButton.addEventListener('click', () => {
+            logDisplay.innerHTML = `<p class="text-gray-400 text-sm">Log display cleared.</p>`;
+        });
+        
+        // --- Caleon Prime Tab Logic ---
+        const autonomySlider = document.getElementById('autonomySlider');
+        const autonomyLevel = document.getElementById('autonomyLevel');
+        
+        autonomySlider.addEventListener('input', (e) => {
+            autonomyLevel.textContent = `${e.target.value}%`;
+        });
+        
+        // --- Alpha Mint Engine Logic ---
+        const mintInput = document.getElementById('mintVaultIdInput');
+        const mintButton = document.getElementById('mintButton');
+        const mintResult = document.getElementById('mintResult');
+        
+        mintButton.addEventListener('click', async () => {
+            const vaultId = mintInput.value.trim();
+            if (!vaultId) {
+                displayMessage(mintResult, 'Please enter a valid Vault ID.');
+                return;
+            }
+            
+            mintButton.disabled = true;
+            mintButton.textContent = 'Minting...';
+            
+            try {
+                const response = await fetch(`${API_URL}/api/v1/mint`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ vaultId: vaultId })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`API returned status ${response.status}`);
+                }
+                
+                const data = await response.json();
+                displayJson(mintResult, data);
+            } catch (error) {
+                displayMessage(mintResult, `Error: Could not mint NFT.`);
+            } finally {
+                mintButton.disabled = false;
+                mintButton.textContent = 'Mint NFT';
+            }
+        });
+
+        // --- Tab Switching Logic ---
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                tabContents.forEach(content => content.classList.remove('active'));
+
+                button.classList.add('active');
+                const targetTabId = button.getAttribute('data-tab');
+                document.getElementById(targetTabId).classList.add('active');
+            });
+        });
+
+        // Set the initial active tab on page load
+        document.getElementById('home-tab').classList.add('active');
+        document.getElementById('home-tab-content').classList.add('active');
+    </script>
+</body>
+</html>

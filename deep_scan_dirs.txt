@@ -1,0 +1,10 @@
+.
+./api
+./comms
+./core
+./core/memory
+./docs
+./modules
+./monitor
+./settings
+./vaults

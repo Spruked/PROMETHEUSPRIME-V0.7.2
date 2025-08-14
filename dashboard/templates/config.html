@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuration - Prometheus NFT Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-900 text-white">
+    <!-- Navigation -->
+    <nav class="bg-gray-800 border-b border-gray-700">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <h1 class="text-xl font-bold">🔥 Prometheus NFT Dashboard</h1>
+                    </div>
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="/" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Dashboard</a>
+                        <a href="/monitoring" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Monitoring</a>
+                        <a href="/security" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Security</a>
+                        <a href="/transactions" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Transactions</a>
+                        <a href="/logs" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Logs</a>
+                        <a href="/config" class="bg-gray-900 text-white px-3 py-2 rounded-md text-sm font-medium">Config</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="flex items-center justify-between mb-6">
+            <h2 class="text-2xl font-bold">Configuration Management</h2>
+            <div class="flex space-x-4">
+                <button id="refresh-config" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md text-sm font-medium">
+                    <i class="fas fa-refresh mr-2"></i>Refresh
+                </button>
+                <button id="validate-config" class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-md text-sm font-medium">
+                    <i class="fas fa-check mr-2"></i>Validate
+                </button>
+            </div>
+        </div>
+
+        <!-- Configuration Sections -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- System Configuration -->
+            <div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
+                <h3 class="text-lg font-semibold mb-4">System Configuration</h3>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Network</label>
+                        <div class="bg-gray-700 rounded-md px-3 py-2 text-sm">{{ config.network }}</div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">RPC URL</label>
+                        <div class="bg-gray-700 rounded-md px-3 py-2 text-sm">{{ config.rpc_url }}</div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Account Address</label>
+                        <div class="bg-gray-700 rounded-md px-3 py-2 text-sm font-mono">{{ config.account_address }}</div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Contract Address</label>
+                        <div class="bg-gray-700 rounded-md px-3 py-2 text-sm font-mono">{{ config.contract_address }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Configuration -->
+            <div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
+                <h3 class="text-lg font-semibold mb-4">Dashboard Configuration</h3>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Update Interval</label>
+                        <input type="number" id="update-interval" value="{{ dashboard_config.update_interval }}" 
+                               class="w-full bg-gray-700 rounded-md px-3 py-2 text-sm">
+                        <p class="text-xs text-gray-400 mt-1">Seconds between updates</p>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Max Log Entries</label>
+                        <input type="number" id="max-log-entries" value="{{ dashboard_config.max_log_entries }}" 
+                               class="w-full bg-gray-700 rounded-md px-3 py-2 text-sm">
+                        <p class="text-xs text-gray-400 mt-1">Maximum log entries to display</p>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Chart Data Points</label>
+                        <input type="number" id="chart-data-points" value="{{ dashboard_config.chart_data_points }}" 
+                               class="w-full bg-gray-700 rounded-md px-3 py-2 text-sm">
+                        <p class="text-xs text-gray-400 mt-1">Number of data points in charts</p>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Refresh Rate</label>
+                        <input type="number" id="refresh-rate" value="{{ dashboard_config.refresh_rate }}" 
+                               class="w-full bg-gray-700 rounded-md px-3 py-2 text-sm">
+                        <p class="text-xs text-gray-400 mt-1">Milliseconds between refreshes</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Environment Variables -->
+            <div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
+                <h3 class="text-lg font-semibold mb-4">Environment Variables</h3>
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between py-2 px-3 bg-gray-700 rounded-md">
+                        <span class="text-sm font-medium">FLASK_ENV</span>
+                        <span class="text-sm text-gray-300">{{ config.flask_env }}</span>
+                    </div>
+                    <div class="flex items-center justify-between py-2 px-3 bg-gray-700 rounded-md">
+                        <span class="text-sm font-medium">RATE_LIMIT_REQUESTS_PER_MINUTE</span>
+                        <span class="text-sm text-gray-300">{{ config.rate_limit_requests_per_minute }}</span>
+                    </div>
+                    <div class="flex items-center justify-between py-2 px-3 bg-gray-700 rounded-md">
+                        <span class="text-sm font-medium">FLASK_SECRET_KEY</span>
+                        <span class="text-sm text-gray-300">***HIDDEN***</span>
+                    </div>
+                    <div class="flex items-center justify-between py-2 px-3 bg-gray-700 rounded-md">
+                        <span class="text-sm font-medium">PRIVATE_KEY</span>
+                        <span class="text-sm text-gray-300">***HIDDEN***</span>
+                    </div>
+                    <div class="flex items-center justify-between py-2 px-3 bg-gray-700 rounded-md">
+                        <span class="text-sm font-medium">WEB3_STORAGE_TOKEN</span>
+                        <span class="text-sm text-gray-300">***HIDDEN***</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Security Settings -->
+            <div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
+                <h3 class="text-lg font-semibold mb-4">Security Settings</h3>
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between">
+                        <label class="text-sm font-medium text-gray-300">HTTPS Only</label>
+                        <input type="checkbox" id="https-only" class="rounded">
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <label class="text-sm font-medium text-gray-300">API Key Required</label>
+                        <input type="checkbox" id="api-key-required" checked class="rounded">
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <label class="text-sm font-medium text-gray-300">Rate Limiting</label>
+                        <input type="checkbox" id="rate-limiting" checked class="rounded">
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <label class="text-sm font-medium text-gray-300">Security Headers</label>
+                        <input type="checkbox" id="security-headers" checked class="rounded">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Configuration Actions -->
+        <div class="mt-8 bg-gray-800 rounded-lg p-6 border border-gray-700">
+            <h3 class="text-lg font-semibold mb-4">Configuration Actions</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <button id="save-config" class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-md text-sm font-medium">
+                    <i class="fas fa-save mr-2"></i>Save Configuration
+                </button>
+                <button id="reset-config" class="bg-yellow-600 hover:bg-yellow-700 px-4 py-2 rounded-md text-sm font-medium">
+                    <i class="fas fa-undo mr-2"></i>Reset to Default
+                </button>
+                <button id="export-config" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md text-sm font-medium">
+                    <i class="fas fa-download mr-2"></i>Export Configuration
+                </button>
+            </div>
+        </div>
+
+        <!-- Configuration Status -->
+        <div class="mt-8 bg-gray-800 rounded-lg p-6 border border-gray-700">
+            <h3 class="text-lg font-semibold mb-4">Configuration Status</h3>
+            <div id="config-status" class="space-y-2">
+                <div class="flex items-center text-sm">
+                    <i class="fas fa-circle text-green-400 mr-2"></i>
+                    <span>Configuration loaded successfully</span>
+                </div>
+                <div class="flex items-center text-sm">
+                    <i class="fas fa-circle text-yellow-400 mr-2"></i>
+                    <span>Validation pending</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // Configuration management functions
+        function refreshConfig() {
+            fetch('/api/config')
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Configuration refreshed:', data);
+                    showNotification('Configuration refreshed successfully', 'success');
+                })
+                .catch(error => {
+                    console.error('Error refreshing configuration:', error);
+                    showNotification('Error refreshing configuration', 'error');
+                });
+        }
+
+        function validateConfig() {
+            fetch('/api/audit')
+                .then(response => response.json())
+                .then(data => {
+                    const compliance = data.compliance;
+                    const statusContainer = document.getElementById('config-status');
+                    
+                    let statusHTML = '';
+                    compliance.checks.forEach(check => {
+                        const iconClass = check.passed ? 'text-green-400' : 'text-red-400';
+                        const icon = check.passed ? 'fa-check-circle' : 'fa-times-circle';
+                        statusHTML += `
+                            <div class="flex items-center text-sm">
+                                <i class="fas ${icon} ${iconClass} mr-2"></i>
+                                <span>${check.name}: ${check.description}</span>
+                            </div>
+                        `;
+                    });
+                    
+                    statusContainer.innerHTML = statusHTML;
+                    
+                    const message = compliance.failed > 0 ? 
+                        `Configuration validation failed: ${compliance.failed} checks failed` :
+                        'Configuration validation passed';
+                    const type = compliance.failed > 0 ? 'error' : 'success';
+                    
+                    showNotification(message, type);
+                })
+                .catch(error => {
+                    console.error('Error validating configuration:', error);
+                    showNotification('Error validating configuration', 'error');
+                });
+        }
+
+        function saveConfig() {
+            const config = {
+                update_interval: document.getElementById('update-interval').value,
+                max_log_entries: document.getElementById('max-log-entries').value,
+                chart_data_points: document.getElementById('chart-data-points').value,
+                refresh_rate: document.getElementById('refresh-rate').value,
+                https_only: document.getElementById('https-only').checked,
+                api_key_required: document.getElementById('api-key-required').checked,
+                rate_limiting: document.getElementById('rate-limiting').checked,
+                security_headers: document.getElementById('security-headers').checked
+            };
+            
+            // In a real implementation, this would send to a save endpoint
+            console.log('Saving configuration:', config);
+            showNotification('Configuration saved successfully', 'success');
+        }
+
+        function resetConfig() {
+            if (confirm('Are you sure you want to reset configuration to default values?')) {
+                // Reset form values
+                document.getElementById('update-interval').value = 5;
+                document.getElementById('max-log-entries').value = 100;
+                document.getElementById('chart-data-points').value = 50;
+                document.getElementById('refresh-rate').value = 1000;
+                document.getElementById('https-only').checked = false;
+                document.getElementById('api-key-required').checked = true;
+                document.getElementById('rate-limiting').checked = true;
+                document.getElementById('security-headers').checked = true;
+                
+                showNotification('Configuration reset to defaults', 'info');
+            }
+        }
+
+        function exportConfig() {
+            const config = {
+                system: {
+                    network: "{{ config.network }}",
+                    rpc_url: "{{ config.rpc_url }}",
+                    account_address: "{{ config.account_address }}",
+                    contract_address: "{{ config.contract_address }}"
+                },
+                dashboard: {
+                    update_interval: document.getElementById('update-interval').value,
+                    max_log_entries: document.getElementById('max-log-entries').value,
+                    chart_data_points: document.getElementById('chart-data-points').value,
+                    refresh_rate: document.getElementById('refresh-rate').value
+                }
+            };
+            
+            const blob = new Blob([JSON.stringify(config, null, 2)], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'prometheus-config.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showNotification('Configuration exported successfully', 'success');
+        }
+
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 p-4 rounded-md text-white z-50 ${
+                type === 'success' ? 'bg-green-600' :
+                type === 'error' ? 'bg-red-600' :
+                type === 'info' ? 'bg-blue-600' : 'bg-yellow-600'
+            }`;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // Event listeners
+        document.getElementById('refresh-config').addEventListener('click', refreshConfig);
+        document.getElementById('validate-config').addEventListener('click', validateConfig);
+        document.getElementById('save-config').addEventListener('click', saveConfig);
+        document.getElementById('reset-config').addEventListener('click', resetConfig);
+        document.getElementById('export-config').addEventListener('click', exportConfig);
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            validateConfig();
+        });
+    </script>
+</body>
+</html>

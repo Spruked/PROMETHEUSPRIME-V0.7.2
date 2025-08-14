@@ -1,0 +1,144 @@
+/* VaultFiles Component Styles */
+.vault-files-container {
+  background: rgba(0, 255, 0, 0.05);
+  border: 1px solid #00ff00;
+  border-radius: 8px;
+  padding: 20px;
+  margin: 20px 0;
+}
+
+.vault-files-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #00ff00;
+  padding-bottom: 10px;
+}
+
+.vault-files-header h3 {
+  margin: 0;
+  color: #00ff00;
+  text-shadow: 0 0 5px #00ff00;
+}
+
+.vault-files-header button {
+  background: #00ff00;
+  color: #000;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: 'Courier New', monospace;
+}
+
+.vault-files-header button:hover {
+  background: #00cc00;
+}
+
+.vault-files-header button:disabled {
+  background: #666;
+  cursor: not-allowed;
+}
+
+.error-message {
+  background: rgba(255, 0, 0, 0.1);
+  border: 1px solid #ff0000;
+  color: #ff0000;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+
+.vault-files-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  min-height: 300px;
+}
+
+.vault-files-list h4,
+.vault-content h4 {
+  color: #00ff00;
+  margin-top: 0;
+  border-bottom: 1px solid #00ff00;
+  padding-bottom: 5px;
+}
+
+.no-vaults,
+.no-selection {
+  color: #666;
+  font-style: italic;
+  text-align: center;
+  padding: 20px;
+}
+
+.vault-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.vault-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid #444;
+  border-radius: 4px;
+  margin-bottom: 8px;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.vault-id {
+  font-family: 'Courier New', monospace;
+  color: #00ff00;
+  font-size: 0.9em;
+}
+
+.vault-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.view-btn,
+.download-btn {
+  background: transparent;
+  border: 1px solid #00ff00;
+  color: #00ff00;
+  padding: 4px 8px;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 0.8em;
+  font-family: 'Courier New', monospace;
+}
+
+.view-btn:hover,
+.download-btn:hover {
+  background: rgba(0, 255, 0, 0.1);
+}
+
+.vault-details {
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid #444;
+  border-radius: 4px;
+  padding: 15px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.vault-json {
+  color: #00ff00;
+  font-family: 'Courier New', monospace;
+  font-size: 0.85em;
+  line-height: 1.4;
+  margin: 0;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+@media (max-width: 768px) {
+  .vault-files-grid {
+    grid-template-columns: 1fr;
+  }
+}

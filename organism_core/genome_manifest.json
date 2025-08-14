@@ -1,0 +1,6 @@
+{
+  "example_strands": [
+    {"id": "strand001", "metaphor": "biological", "path": "data/strand001.txt"},
+    {"id": "strand002", "metaphor": "ritual", "path": "data/strand002.txt"}
+  ]
+}

@@ -1,0 +1,12 @@
+# ProPrime-Starter.zip
+
+This is a placeholder for the zipped starter kit. Please use your file explorer or a zip utility to compress the contents of the `starter-kit/` folder into `ProPrime-Starter.zip` for distribution.
+
+Contents to include:
+- .env.example
+- ethics.yaml
+- vault_sample.json
+- test_api.py
+- README.md (starter-kit)
+
+For license details, see the main LICENSE file.

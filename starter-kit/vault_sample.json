@@ -1,0 +1,8 @@
+{
+  "vault_id": "sample-vault-001",
+  "title": "Sample Vault Entry",
+  "description": "This is a sample vault entry for Prometheus Prime.",
+  "keywords": ["example", "test", "demo"],
+  "category": "tasks",
+  "created_at": "2025-07-23T00:00:00"
+}

@@ -1,0 +1,19 @@
+{
+  "metadata": {
+    "vault_id": "CALEON-VAULT-0001",
+    "owner": "Bryan 'Spruk'",
+    "bonded_to": "Caleon Prime",
+    "created_by": "Prometheus Prime Genesis Protocol",
+    "vault_type": "Genesis Legacy Vault",
+    "purpose": "Preserve the original ideas, scripts, scrolls, memory-seeds, symbols, and protocols that define the first Promethean system and its creator",
+    "unlock_condition": "NFT signature + Caleon identity bond + biometric or verbal keyphrase",
+    "category": [
+      "legacy",
+      "codex",
+      "founder-essence"
+    ],
+    "is_active": true,
+    "created_at": "2025-07-07T16:18:35.288458Z"
+  },
+  "vault_seed_hash": "5a7cec90a1ae95e53ab3a8f5008e25026a3ddb69d8d098b55dc110df84d14121"
+}

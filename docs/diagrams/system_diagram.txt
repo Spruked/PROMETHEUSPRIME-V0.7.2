@@ -1,0 +1,35 @@
+Prometheus Prime Backend – System Diagram (Conceptual)
+
+┌──────────────────────────────┐
+│         USER / UI / API      │◄─── HTTP / JSON
+└────────────┬─────────────────┘
+             │
+             ▼
+    ┌──────────────────────────────┐
+    │         Flask App (app.py)   │
+    │ ───────────────────────────  │
+    │ Routes, WebSockets, API      │
+    │ Startup: ethics + DB         │
+    └──────┬────────────┬──────────┘
+           │            │
+           │            ▼
+           │      🧠 HelixEchoCore
+           │      - Symbolic echo engine
+           │      - Aligns to ethics.yaml
+           │
+           ▼
+     🪞 Caleon Mirror Logic
+     - Symbolic reflection
+     - Codex integration (Mistral/local)
+
+           │
+           ▼
+    🔒 TrustGlyphVerifier
+    - Validates ethical output
+    - Checks resonance & pulse
+
+           │
+           ▼
+     🗂️ Memory Layer (SQLite + Files)
+     - MemoryStore (emotional tagging)
+     - Vault JSONs (task snapshots)

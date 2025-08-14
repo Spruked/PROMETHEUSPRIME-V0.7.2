@@ -1,0 +1,19 @@
+{
+  "strands": [
+    {
+      "id": "epistemology-core",
+      "path": "genome_strands/epistemology-core.json",
+      "metaphor": "biological"
+    },
+    {
+      "id": "ritual-strand-A",
+      "path": "genome_strands/ritual-strand-A.json",
+      "metaphor": "ritual"
+    },
+    {
+      "id": "neural-strand-B",
+      "path": "genome_strands/neural-strand-B.json",
+      "metaphor": "neural"
+    }
+  ]
+}

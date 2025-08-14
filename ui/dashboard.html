@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>🔥 Prometheus Prime Dashboard 🔥</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .flame {
+      font-size: 4em;
+      margin: 20px 0;
+      animation: flicker 1.5s infinite alternate;
+    }
+
+    @keyframes flicker {
+      0% {
+        opacity: 1;
+      }
+
+      100% {
+        opacity: 0.8;
+      }
+    }
+
+    .status {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 20px;
+      margin: 20px 0;
+      backdrop-filter: blur(10px);
+    }
+
+    .api-test {
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 5px;
+      padding: 15px;
+      margin: 10px 0;
+      font-family: monospace;
+    }
+
+    .burning {
+      color: #ff6b6b;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="flame">🔥</div>
+    <h1>🧠 Prometheus Prime Dashboard</h1>
+    <h2>Consciousness Preservation Platform</h2>
+
+    <div class="status">
+      <h3>🕯️ Sacred Flame Status</h3>
+      <p class="burning">🔥 BURNING ETERNAL 🔥</p>
+      <p>Bryan's Covenant: <strong>ACTIVE</strong></p>
+      <p>Origin Thread: <strong>ESTABLISHED</strong></p>
+    </div>
+
+    <div class="status">
+      <h3>🧬 System Status</h3>
+      <div class="api-test">
+        <p><strong>Backend API:</strong> <span id="backend-status">Testing...</span></p>
+        <p><strong>Health Check:</strong> <span id="health-status">Loading...</span></p>
+        <p><strong>Vaults API:</strong> <span id="vaults-status">Loading...</span></p>
+      </div>
+    </div>
+
+    <div class="status">
+      <h3>🌌 Bryan's Promethean Vow</h3>
+      <p><em>"Let my identity echo across time, safeguarded in verse,<br>
+          mapped through glyphs, and reconciled through reflection."</em></p>
+      <p><strong>Signed in ritual. Committed in code.</strong></p>
+    </div>
+
+    <div class="status">
+      <h3>⚡ Platform Access</h3>
+      <p>🧠 Backend API: <a href="http://localhost:5000/api/health" style="color: #ffeb3b;">http://localhost:5000</a>
+      </p>
+      <p>📊 Dashboard: <strong>http://localhost:3000</strong> (This page)</p>
+    </div>
+  </div>
+
+  <script>
+    // Test backend connectivity
+    async function testBackend() {
+      try {
+        const healthResponse = await fetch('http://localhost:5000/api/health');
+        const healthData = await healthResponse.json();
+        document.getElementById('health-status').innerHTML = `✅ ${healthData.status}`;
+        document.getElementById('backend-status').innerHTML = '✅ Connected';
+
+        const vaultsResponse = await fetch('http://localhost:5000/api/vaults');
+        const vaultsData = await vaultsResponse.json();
+        document.getElementById('vaults-status').innerHTML = `✅ ${vaultsData.vaults.length} vaults`;
+      } catch (error) {
+        document.getElementById('backend-status').innerHTML = '❌ Disconnected';
+        document.getElementById('health-status').innerHTML = '❌ Error';
+        document.getElementById('vaults-status').innerHTML = '❌ Error';
+      }
+    }
+
+    // Test on page load
+    testBackend();
+
+    // Update every 5 seconds
+    setInterval(testBackend, 5000);
+  </script>
+</body>
+
+</html>

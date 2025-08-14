@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  prometheus-api:
+    build: .
+    command: python app.py
+    volumes:
+      - .:/app
+    ports:
+      - "5000:5000"
+    environment:
+      - NETWORK=YOUR_NETWORK_NAME
+      - RPC_URL=https://your-network-rpc-url
+      - PRIVATE_KEY=YOUR_WALLET_PRIVATE_KEY
+      - ACCOUNT_ADDRESS=YOUR_WALLET_PUBLIC_ADDRESS
+      - WEB3_STORAGE_TOKEN=YOUR_WEB3_STORAGE_API_TOKEN
+      - CONTRACT_ADDRESS=0xYourDeployedContractAddress
+    working_dir: /app
+    restart: unless-stopped
+
+  prometheus-frontend:
+    image: node:18
+    working_dir: /frontend
+    volumes:
+      - ./frontend:/frontend
+    command: sh -c "npm install && npm run dev"
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
