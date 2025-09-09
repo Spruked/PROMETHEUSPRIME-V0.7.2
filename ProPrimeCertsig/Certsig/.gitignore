@@ -1,0 +1,14 @@
+# Ignore node modules and environment files
+node_modules/
+.env
+
+# Ignore generated certificate folders
+*_certificates/
+
+# Ignore log files
+*.log
+
+# Ignore OS and editor files
+.DS_Store
+Thumbs.db
+.vscode/

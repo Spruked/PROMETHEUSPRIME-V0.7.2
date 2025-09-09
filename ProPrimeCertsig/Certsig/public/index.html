@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificate Generator</title>
+    <style>
+        body { font-family: sans-serif; max-width: 600px; margin: 40px auto; padding: 20px; border: 1px solid #ccc; border-radius: 8px; }
+        label, input, button { display: block; width: 100%; margin-bottom: 10px; }
+        input { padding: 8px; }
+        button { padding: 10px; background-color: #007BFF; color: white; border: none; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>Pro Prime Certificate Generator</h1>
+    <p>Please enter the details below to generate your official certificate.</p>
+    <form action="/generate" method="POST">
+        <label for="ownerName">Owner Name:</label>
+        <input type="text" id="ownerName" name="ownerName" required>
+
+        <label for="promName">Promethean Name:</label>
+        <input type="text" id="promName" name="promName" required>
+
+        <label for="edition">Edition:</label>
+        <input type="text" id="edition" name="edition" required>
+
+        <label for="nftId">NFT ID:</label>
+        <input type="text" id="nftId" name="nftId" required>
+
+        <label for="userId">User ID:</label>
+        <input type="text" id="userId" name="userId" required>
+        
+        <label for="qrLink">QR Code Link:</label>
+        <input type="url" id="qrLink" name="qrLink" required>
+
+        <button type="submit">Generate Certificate</button>
+    </form>
+</body>
+</html>

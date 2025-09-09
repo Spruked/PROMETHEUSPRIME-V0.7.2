@@ -1,0 +1,15 @@
+{
+  "name": "certsig-certificate-generator",
+  "version": "1.0.0",
+  "description": "Blockchain-backed certificate PDF generator for Promethean AI entities.",
+  "main": "certificate-generator.js",
+  "scripts": {
+    "start": "node certificate-generator.js"
+  },
+  "dependencies": {
+    "pdf-lib": "^1.17.1",
+    "qrcode": "^1.5.1",
+    "date-fns": "^3.6.0",
+    "dotenv": "^17.2.1"
+  }
+}
